@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Генератор паролей</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #121212; /* темный фон */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background-color: #1e1e1e; /* чуть светлее для контраста */
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        max-width: 420px;
+        width: 100%;
+        border: 2px solid #00ff00; /* зеленая рамка */
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #00ff00; /* ярко-зеленый заголовок */
+        font-size: 2em;
+        font-weight: 700;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #ccc; /* светлый цвет для текста */
+    }
+
+    input[type="number"] {
+        padding: 10px;
+        border-radius: 8px;
+        border: 2px solid #444;
+        background-color: #2a2a2a;
+        color: #fff;
+        font-size: 1em;
+        margin-bottom: 15px;
+        transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    input[type="number"]:focus {
+        border-color: #00ff00;
+        background-color: #222;
+        outline: none;
+    }
+
+    .checkbox-group {
+        margin-bottom: 20px;
+    }
+
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        color: #ccc;
+    }
+
+    .checkbox-group label:hover {
+        background-color: #333;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    input[type="submit"] {
+        padding: 12px;
+        background-color: #00ff00;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: bold;
+        color: #000;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #00cc00;
+        transform: scale(1.02);
+    }
+
+    .result {
+        margin-top: 20px;
+        padding: 20px;
+        background: #222;
+        border-radius: 12px;
+        box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
+        word-wrap: break-word;
+        font-family: monospace;
+        font-size: 1.2em;
+        color: #00ff00;
+        text-align: center;
+    }
+
+    /* Стиль для истории паролей */
+    .history {
+        margin-top: 20px;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+        background: #222;
+        border-radius: 12px;
+        box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
+    }
+
+    .history h3 {
+        margin-top: 0;
+        color: #00ff00;
+        text-align: center;
+    }
+
+    .history ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    .history li {
+        padding: 4px 8px;
+        border-bottom: 1px solid #444;
+        font-family: monospace;
+        font-size: 1em;
+        color: #ccc;
+    }
+
+    /* Стили для отображения имени пользователя */
+    .user-info {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #ccc;
+    }
+
+    a {
+        color: #00ff00;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Генератор паролей</h1>
+    {% if session['username'] %}
+    <div class="user-info">
+        <p>Вы вошли как: <strong>{{ session['username'] }}</strong></p>
+        <p><a href="{{ url_for('logout') }}">Выйти</a></p>
+    </div>
+    {% endif %}
+    <form action="/" method="post">
+        <label for="length">Длина пароля:</label>
+        <input type="number" id="length" name="length" value="{{ length }}" min="4" max="128" required>
+
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="lowercase" {% if use_lowercase %}checked{% endif %}> Строчные буквы (a-z)</label>
+            <label><input type="checkbox" name="uppercase" {% if use_uppercase %}checked{% endif %}> Прописные буквы (A-Z)</label>
+            <label><input type="checkbox" name="digits" {% if use_digits %}checked{% endif %}> Цифры (0-9)</label>
+            <label><input type="checkbox" name="symbols" {% if use_symbols %}checked{% endif %}> Спецсимволы (!@#$...)</label>
+        </div>
+
+        <input type="submit" value="Сгенерировать" />
+    </form>
+
+    {% if password %}
+    <div class="result">
+        <p>Ваш пароль:</p>
+        <code>{{ password }}</code>
+    </div>
+    {% endif %}
+
+
+    <div class="history">
+        <h3>История паролей</h3>
+        {% if users[session['username']]['history'] %}
+        <ul>
+            {% for p in users[session['username']]['history'] %}
+            <li>{{ p }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Нет истории паролей.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
+
