@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор Паролей</title>
+    <style>
+        /* === ГЛОБАЛЬНЫЕ СТИЛИ === */
+        :root {
+            --main-color: #00FF00; /* Ярко-зеленый */
+            --bg-color: #111111; /* Темный фон */
+            --input-bg: #333333;
+            --text-color: #F0F0F0;
+            --error-color: #FF4444;
+            --success-color: #00AA00;
+        }
+
+        body { 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            /* Обеспечиваем центрирование на всю высоту, как на скриншоте входа */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* === ОСНОВНОЙ КОНТЕЙНЕР / КАРТОЧКА === */
+        .container { 
+            max-width: 800px; 
+            width: 90%;
+            margin: 20px auto; /* Добавляем небольшой вертикальный отступ для не-login страниц */
+            background: #222222; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 15px var(--main-color);
+            border: 2px solid var(--main-color);
+            /* Если страница index, убираем минимальную высоту, чтобы контент не был сжат */
+            display: block; 
+        }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #333333; 
+            padding-bottom: 15px; 
+            margin-bottom: 25px; 
+        }
+        header h1 {
+            color: var(--main-color);
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        /* === ФОРМЫ И ИНПУТЫ === */
+        h2 {
+            color: var(--main-color);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        input[type="text"], 
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--main-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none; /* Убираем стандартное синее выделение */
+        }
+        input[type="text"]:focus, 
+        input[type="password"]:focus,
+        input[type="number"]:focus {
+            box-shadow: 0 0 5px var(--main-color);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        /* === КНОПКА ВОЙТИ / СГЕНЕРИРОВАТЬ === */
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--main-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+        button[type="submit"]:hover {
+            background-color: #00CC00;
+            box-shadow: 0 0 8px var(--main-color);
+        }
+
+        /* === ССЫЛКИ И УВЕДОМЛЕНИЯ === */
+        a { 
+            color: var(--main-color); 
+            text-decoration: none; 
+            transition: color 0.2s;
+        }
+        a:hover { 
+            color: #00CC00; 
+            text-decoration: underline; 
+        }
+        
+        .flash { 
+            padding: 10px; 
+            margin-bottom: 15px; 
+            border-radius: 6px; 
+            text-align: center;
+            font-weight: bold;
+        }
+        .success { 
+            background-color: var(--success-color); 
+            color: var(--bg-color); 
+            border: 1px solid var(--success-color); 
+        }
+        .error { 
+            background-color: var(--error-color); 
+            color: var(--bg-color); 
+            border: 1px solid var(--error-color); 
+        }
+        .info { 
+            background-color: #555555; 
+            color: var(--text-color); 
+            border: 1px solid #777777; 
+        }
+
+        /* Стили для index.html (для форм и истории) */
+        .password-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border: 2px dashed var(--main-color);
+            border-radius: 6px;
+            font-size: 1.3em;
+            font-weight: bold;
+            overflow-wrap: break-word;
+            text-align: center;
+        }
+        
+        .history-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .history-list li {
+            background-color: #2a2a2a;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #AAAAAA;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if 'username' in session %}
+            <header>
+                <h1>Генератор Паролей</h1>
+                <div>
+                    <span style="color: var(--main-color);">Привет, {{ session['username'] }}!</span> | 
+                    <a href="{{ url_for('logout') }}">Выход</a>
+                </div>
+            </header>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

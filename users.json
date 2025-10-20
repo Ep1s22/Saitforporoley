@@ -1,0 +1,12 @@
+{
+    "Damir seledka": {
+        "password_hash": "scrypt:32768:8:1$Q0fdqgK6W0UgHYji$4693ef98cac39d75b8a9e859253c634ed10c2bc00f6b793d55c8de3da2e36065a281086822f195487fe98ba17cc208aad5081b033c555d904bd270d71b1f3d1a",
+        "history": [
+            "Auf7A7gw12Ag"
+        ]
+    },
+    "Ep1s": {
+        "password_hash": "scrypt:32768:8:1$rc5bM5dAqJrPmPas$e149d1f360518fc8d19b64afbf7ce0286561db65cb7c339d39bcda681a401e385bf85b9ac905aa2fc409fd0961d21b599bfd1789a3837ad1c505369398db7a48",
+        "history": []
+    }
+}
