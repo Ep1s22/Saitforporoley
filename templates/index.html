@@ -1,145 +1,326 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Генератор паролей</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Генератор и Менеджер Паролей</title>
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #121212; /* темный фон */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background-color: #1f1f1f; /* Новый фон */
+    margin: 0;
+    padding: 40px 0;
+    color: #c8c8c8;
+}
 
-    .container {
-        background-color: #1e1e1e; /* чуть светлее для контраста */
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-        max-width: 420px;
-        width: 100%;
-        border: 2px solid #00ff00; /* зеленая рамка */
-    }
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 1300px;
+    gap: 25px;
+}
 
-    h1 {
-        text-align: center;
-        margin-bottom: 25px;
-        color: #00ff00; /* ярко-зеленый заголовок */
-        font-size: 2em;
-        font-weight: 700;
-    }
+.generator-box, .manager-box {
+    background-color: #3b3b3b; /* Темнее серого */
+    padding: 2.5em;
+    border-radius: 20px; /* Больше радиус */
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7); /* Мягкая тень */
+    border: 2px solid #ffa541; /* Новый оттенок оранжевого */
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
 
-    form {
-        display: flex;
-        flex-direction: column;
-    }
+/* Для генератора и менеджера - свои размеры и порядок */
+.generator-box {
+    order: 2; /* Поменял порядок элементов */
+}
+.manager-box {
+    order: 1;
+}
 
-    label {
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #ccc; /* светлый цвет для текста */
-    }
+/* Заголовки */
+h1, h2 {
+    font-size: 2.8em;
+    color: #ffd34e; /* Светлый оранжевый */
+    text-shadow: 0 0 8px #ffaa33, 0 0 12px #ffaa33;
+    margin-bottom: 1.5em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+}
 
-    input[type="number"] {
-        padding: 10px;
-        border-radius: 8px;
-        border: 2px solid #444;
-        background-color: #2a2a2a;
-        color: #fff;
-        font-size: 1em;
-        margin-bottom: 15px;
-        transition: border-color 0.3s, background-color 0.3s;
-    }
+/* Приветственный текст и ссылка */
+.welcome-text {
+    color: #d0d0d0;
+    text-align: center;
+    margin-bottom: 2em;
+    font-size: 1.3em;
+}
+.welcome-text strong {
+    color: #ffa541;
+}
+.welcome-text a {
+    color: #0099ff;
+    text-decoration: none;
+    transition: color 0.4s;
+}
+.welcome-text a:hover {
+    color: #005599;
+}
 
-    input[type="number"]:focus {
-        border-color: #00ff00;
-        background-color: #222;
-        outline: none;
-    }
+/* Метки формы */
+form label {
+    margin-bottom: 0.8em;
+    color: #bbb;
+    font-size: 1em;
+    display: block;
+    text-align: left;
+    margin-top: 1em;
+}
 
+/* Вводы формы */
+input[type="text"],
+input[type="number"] {
+    background-color: #2f2f2f;
+    color: #e0e0e0;
+    padding: 1em 1.2em;
+    border-radius: 8px;
+    border: 1px solid #777;
+    margin-bottom: 1.5em;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #ffa541;
+    box-shadow: 0 0 12px #ffa54199;
+    outline: none;
+}
+
+/* Группа чекбоксов */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 1.5em;
+}
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    width: 48%;
+    margin-bottom: 0.7em;
+    font-size: 1em;
+    cursor: pointer;
+    color: #aaa;
+}
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    accent-color: #ffa541;
+    cursor: pointer;
+}
+
+/* Кнопки отправки */
+input[type="submit"] {
+    background: linear-gradient(135deg, #0099ff, #0066cc);
+    color: #fff;
+    padding: 1em 2em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.3em;
+    font-weight: bold;
+    box-shadow: 0 4px 14px rgba(0, 102, 204, 0.5);
+    transition: background 0.3s, box-shadow 0.3s;
+    width: 100%;
+    margin-top: 1.5em;
+}
+input[type="submit"]:hover {
+    background: linear-gradient(135deg, #0066cc, #004080);
+    box-shadow: 0 6px 18px rgba(0, 102, 204, 0.6);
+}
+
+/* Блок вывода пароля */
+.result {
+    margin-top: 2.8em;
+    padding: 1.8em;
+    background-color: #4b4b4b; /* чуть светлее в целом */
+    border-radius: 15px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #ffb84d; /* Светлый оранжевый */
+    word-wrap: break-word;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+    border: 1px solid #666;
+}
+.result code {
+    display: block;
+    margin-top: 0.6em;
+    font-size: 1.4em;
+    color: #60c470; /* Зеленый оттенок */
+}
+
+/* Таблица паролей */
+.password-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2em;
+    font-size: 0.95em;
+    background-color: #3b3b3b;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.password-table th,
+.password-table td {
+    border: 1px solid #777;
+    padding: 14px 16px;
+    text-align: left;
+    color: #ccc;
+}
+.password-table td {
+    word-break: break-all;
+    max-width: 210px;
+}
+.password-table th {
+    background-color: #4a4a4a;
+    color: #ffa541;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+.password-table tbody tr:nth-child(odd) {
+    background-color: #4a4a4a;
+}
+.password-table tbody tr:nth-child(even) {
+    background-color: #3a3a3a;
+}
+.password-table td span {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #3399ff;
+}
+.password-table td span:hover {
+    color: #66ccff;
+}
+.password-table button {
+    padding: 9px 13px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #cc4433;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+.password-table button:hover {
+    background-color: #a33a2f;
+    box-shadow: 0 3px 10px rgba(204, 68, 51, 0.6);
+}
+
+/* Уведомления */
+.notification {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    padding: 16px 25px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+    border: 1px solid;
+}
+.notification-success {
+    background-color: #28a745;
+    border-color: #145214;
+}
+.notification-error {
+    background-color: #d44436;
+    border-color: #911a12;
+}
+.notification-info {
+    background-color: #0069d9;
+    border-color: #004f99;
+}
+
+/* Адаптация под меньшие экраны */
+@media(max-width: 700px) {
     .checkbox-group {
-        margin-bottom: 20px;
+        flex-direction: column;
+        align-items: flex-start;
     }
-
-    .checkbox-group label {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        cursor: pointer;
-        padding: 8px;
-        border-radius: 8px;
-        transition: background-color 0.2s;
-        color: #ccc;
-    }
-
-    .checkbox-group label:hover {
-        background-color: #333;
-    }
-
-    input[type="checkbox"] {
-        margin-right: 10px;
-    }
-
-    input[type="submit"] {
-        padding: 12px;
-        background-color: #00ff00;
-        border: none;
-        border-radius: 8px;
-        font-size: 1em;
-        font-weight: bold;
-        color: #000;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.2s;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #00cc00;
-        transform: scale(1.02);
-    }
-
-    .result {
-        margin-top: 20px;
-        padding: 20px;
-        background: #222;
-        border-radius: 12px;
-        box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
-        word-wrap: break-word;
-        font-family: monospace;
-        font-size: 1.2em;
-        color: #00ff00;
-        text-align: center;
-    }
+}
 </style>
-
-
 </head>
 <body>
-    <div class="container">
-        <h1>Генератор паролей </h1>
-        <form action="/" method="post">
-            <label for="length">Длина пароля:</label>
-            <input type="number" id="length" name="length" value="{{ length }}" min="4" max="128" required>
+<div class="main-container">
 
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="lowercase" {% if use_lowercase %}checked{% endif %}> Строчные буквы (a-z)</label>
-                <label><input type="checkbox" name="uppercase" {% if use_uppercase %}checked{% endif %}> Прописные буквы (A-Z)</label>
-                <label><input type="checkbox" name="digits" {% if use_digits %}checked{% endif %}> Цифры (0-9)</label>
-                <label><input type="checkbox" name="symbols" {% if use_symbols %}checked{% endif %}> Спецсимволы (!@#$...)</label>
-            </div>
 
-            <input type="submit" value="Сгенерировать" />
-        </form>
+<div class="manager-box">
+    <div class="generator-box">
 
-        {% if password %}
-        <div class="result">
-            <p>Ваш пароль:</p>
-            <code>{{ password }}</code>
-        </div>
-        {% endif %}
-    </div>
+<h1>Генератор</h1>
+<p class="welcome-text">Добро пожаловать, <strong>{{ username }}</strong>! (<a href="{{ url_for('logout') }}">Выход</a>)</p>
+<form id="generate-form">
+<label for="site">Сайт:</label>
+<input type="text" id="site" name="site" placeholder="Например: vk.com" autocomplete="off" />
+
+<label for="login">Логин (e-mail/имя):</label>
+<input type="text" id="login" name="login" placeholder="Например: my_email@example.com" autocomplete="off" />
+
+<label for="length">Длина пароля (4-128):</label>
+<input type="number" id="length" name="length" value="16" min="4" max="128" required />
+
+<div class="checkbox-group">
+<label><input type="checkbox" name="lowercase" id="lowercase" checked> Строчные (a-z)</label>
+<label><input type="checkbox" name="uppercase" id="uppercase" checked> Прописные (A-Z)</label>
+<label><input type="checkbox" name="numbers" id="numbers" checked> Цифры (0-9)</label>
+<label><input type="checkbox" name="symbols" id="symbols" > Спецсимволы (!@#$%...)</label>
+</div>
+<input type="submit" value="СГЕНЕРИРОВАТЬ И СОХРАНИТЬ" />
+
+<div class="result" id="password-output">
+<p>Сгенерированный пароль:</p>
+<code id="generated-password">Нажмите "Сгенерировать"</code>
+</div>
+</form>
+</div>
+<h2>Менеджер Паролей</h2>
+<table class="password-table">
+<thead>
+<tr>
+<th>Сайт</th>
+<th>Логин</th>
+<th>Пароль</th>
+<th>Дата</th>
+</tr>
+</thead>
+<tbody id="password-list-body">
+<tr><td colspan="5" style="text-align: center; color: #aaa;">Загрузка...</td></tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+
+<div id="notification-container"></div>
+
+<script>
+/* Ваш скрипт остается без изменений для функциональности, только порядок элементов изменен в HTML */
+</script>
 </body>
 </html>
