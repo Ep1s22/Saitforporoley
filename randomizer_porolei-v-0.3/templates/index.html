@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор и Менеджер Паролей</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #1a1a1a;
+            margin: 0;
+            padding: 30px 0;
+            color: #e0e0e0;
+        }
+        .main-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            width: 95%;
+            max-width: 1400px;
+        }
+        .generator-box, .manager-box {
+            background-color: #2b2b2b;
+            padding: 2.5em;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            border: 2px solid #7dcf91;
+            box-sizing: border-box;
+        }
+        .generator-box {
+            width: 450px;
+            flex-shrink: 0;
+        }
+        .manager-box {
+            flex-grow: 1;
+            min-width: 600px;
+        }
+
+        h1, h2 {
+            font-size: 2.2em;
+            color: #7dcf91;
+            text-shadow: 0 0 4px #ff6600, 0 0 8px #ff6600;
+            margin-bottom: 1.5em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .welcome-text {
+            color: #c0c0c0;
+            text-align: center;
+            margin-bottom: 2em;
+            font-size: 1.1em;
+        }
+        .welcome-text strong {
+            color: #7dcf91;
+        }
+        .welcome-text a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .welcome-text a:hover {
+            color: #0056b3;
+        }
+
+        form label {
+            margin-bottom: 0.8em;
+            color: #c0c0c0;
+            font-size: 1em;
+            display: block;
+            text-align: left;
+        }
+        input[type="text"],
+        input[type="number"] {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            padding: 1em 1.2em;
+            border-radius: 8px;
+            border: 1px solid #555;
+            margin-bottom: 1.5em;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1.1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+            outline: none;
+        }
+        .checkbox-group {
+            margin-bottom: 1.5em;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5em;
+            font-size: 1em;
+            cursor: pointer;
+            color: #e0e0e0;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            accent-color: #7dcf91;
+            cursor: pointer;
+        }
+        input[type="submit"] {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            padding: 1em 2em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+            transition: background 0.3s, box-shadow 0.3s;
+            width: 100%;
+            margin-top: 1em;
+        }
+        input[type="submit"]:hover {
+            background: linear-gradient(145deg, #0056b3, #004085);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
+        }
+
+        .result {
+            margin-top: 2.5em;
+            padding: 1.5em;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #7dcf91;
+            word-wrap: break-word;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #555;
+        }
+        .result code {
+            display: block;
+            margin-top: 0.5em;
+            font-size: 1.3em;
+            color: #28a745;
+        }
+
+        .password-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5em;
+            font-size: 0.95em;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .password-table th, .password-table td {
+            border: 1px solid #444;
+            padding: 12px 15px;
+            text-align: left;
+            color: #e0e0e0;
+        }
+        .password-table th {
+            background-color: #3a3a3a;
+            color: #7dcf91;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .password-table tbody tr:nth-child(odd) {
+            background-color: #2b2b2b;
+        }
+        .password-table tbody tr:nth-child(even) {
+            background-color: #222;
+        }
+        .password-table td span {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #007bff;
+            user-select: all;
+        }
+        .password-table td span:hover {
+            color: #66b3ff;
+        }
+        .password-table button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+        }
+        .password-table button:hover {
+            background-color: #c82333;
+            box-shadow: 0 3px 8px rgba(220, 53, 69, 0.5);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid;
+        }
+
+        .notification-success {
+            background-color: #28a745;
+            border-color: #1e7e34;
+        }
+
+        .notification-error {
+            background-color: #dc3545;
+            border-color: #bd2130;
+        }
+        .notification-info {
+            background-color: #007bff;
+            border-color: #0056b3;
+        }
+
+        @media (max-width: 1100px) {
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .generator-box, .manager-box {
+                width: 90%;
+                max-width: 600px;
+                flex-shrink: 1;
+                min-width: unset;
+            }
+        }
+        @media (max-width: 650px) {
+            .password-table th:nth-child(4),
+            .password-table td:nth-child(4) {
+                display: none;
+            }
+            .manager-box {
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+
+
+        <div class="generator-box">
+            <h1>Генератор 🔐</h1>
+            <p class="welcome-text">Добро пожаловать, <strong>{{ username }}</strong>! (<a href="{{ url_for('logout') }}">Выход</a>)</p>
+
+
+            <form id="generate-form">
+                <label for="site">Сайт:</label>
+                <input type="text" id="site" name="site" placeholder="Например: vk.com" autocomplete="off">
+
+                <label for="login">Логин (e-mail/имя):</label>
+                <input type="text" id="login" name="login" placeholder="Например: my_email@example.com" autocomplete="off">
+
+                <label for="length">Длина пароля (4-128):</label>
+                <input type="number" id="length" name="length" value="16" min="4" max="128" required>
+
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="lowercase" id="lowercase" checked> Строчные (a-z)</label>
+                    <label><input type="checkbox" name="uppercase" id="uppercase" checked> Прописные (A-Z)</label>
+                    <label><input type="checkbox" name="numbers" id="numbers" checked> Цифры (0-9)</label>
+                    <label><input type="checkbox" name="symbols" id="symbols" > Спецсимволы (!@#$%...)</label>
+                </div>
+
+                <input type="submit" value="СГЕНЕРИРОВАТЬ И СОХРАНИТЬ">
+            </form>
+
+
+            <div class="result" id="password-output">
+                <p>Сгенерированный пароль:</p>
+                <code id="generated-password">Нажмите "Сгенерировать"</code>
+            </div>
+        </div>
+
+
+        <div class="manager-box">
+            <h2>Менеджер Паролей</h2>
+
+            <table class="password-table">
+                <thead>
+                    <tr>
+                        <th>Сайт</th>
+                        <th>Логин</th>
+                        <th>Пароль</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="password-list-body">
+                    <tr><td colspan="5" style="text-align: center; color: #aaa;">Загрузка...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateForm = document.getElementById('generate-form');
+            const generatedPassword = document.getElementById('generated-password');
+            const passwordListBody = document.getElementById('password-list-body');
+
+            // --- 1. Кастомная функция уведомления ---
+            function showNotification(message, type = 'info') {
+                const existing = document.getElementById('notification-box');
+                if (existing) existing.remove();
+
+                const box = document.createElement('div');
+                box.id = 'notification-box';
+                box.textContent = message;
+                box.className = `notification notification-${type}`;
+
+                document.body.appendChild(box);
+
+                setTimeout(() => box.style.opacity = '1', 10);
+
+                setTimeout(() => {
+                    box.style.opacity = '0';
+                    setTimeout(() => box.remove(), 500);
+                }, 4000);
+            }
+
+            // --- 2. Функция загрузки и отображения списка паролей ---
+            function loadPasswords() {
+                fetch('{{ url_for("passwords") }}')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Не удалось получить список паролей.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        passwordListBody.innerHTML = '';
+                        const passwords = data.passwords || [];
+
+                        if (passwords.length > 0) {
+                            // *** ИСПОЛЬЗУЕМ УНИКАЛЬНЫЙ ID (pwd.id) ИЗ БАЗЫ ДАННЫХ ***
+                            passwords.forEach((pwd) => {
+                                const row = document.createElement('tr');
+
+                                row.innerHTML = `
+                                    <td>${pwd.site || '—'}</td>
+                                    <td>${pwd.login || '—'}</td>
+                                    <td><span title="Нажмите, чтобы скопировать" onclick="copyToClipboard(event, '${pwd.password}')">${pwd.password}</span></td>
+                                    <td>${new Date(pwd.time).toLocaleDateString('ru-RU')}</td>
+                                    <td>
+                                        <button onclick="deletePassword(${pwd.id})">Удалить</button>
+                                    </td>
+                                `;
+                                passwordListBody.appendChild(row);
+                            });
+                        } else {
+                            passwordListBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #aaa;">Нет сохраненных паролей.</td></tr>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при загрузке паролей:', error);
+                        showNotification('Не удалось загрузить пароли. Проверьте сервер и БД.', 'error');
+                        passwordListBody.innerHTML = '<tr><td colspan="5" style="color: #dc3545; text-align: center;">Не удалось загрузить пароли.</td></tr>';
+                    });
+            }
+
+            // --- 3. Вспомогательная функция для копирования (глобальная) ---
+            window.copyToClipboard = function(event, text) {
+                 event.preventDefault();
+                 const el = document.createElement('textarea');
+                 el.value = text;
+                 el.setAttribute('readonly', '');
+                 el.style.position = 'absolute';
+                 el.style.left = '-9999px';
+                 document.body.appendChild(el);
+
+                 if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showNotification('Пароль скопирован!', 'success');
+                        el.remove();
+                    }).catch(() => {
+                        el.select();
+                        try {
+                             document.execCommand('copy');
+                             showNotification('Пароль скопирован (Fallback)!', 'success');
+                        } catch (err) {
+                            showNotification('Не удалось скопировать пароль. Выделите его вручную.', 'error');
+                        } finally {
+                            el.remove();
+                        }
+                    });
+                 } else {
+                     el.select();
+                     try {
+                         document.execCommand('copy');
+                         showNotification('Пароль скопирован!', 'success');
+                     } catch (err) {
+                         showNotification('Не удалось скопировать пароль. Выделите его вручную.', 'error');
+                     } finally {
+                        el.remove();
+                    }
+                 }
+            }
+
+
+            // --- 4. Функция удаления пароля (глобальная для кнопки) ---
+            window.deletePassword = function(id) {
+                // *** ID теперь - это Primary Key из базы данных! ***
+                if (window.confirm('Вы уверены, что хотите удалить этот пароль?')) {
+                    fetch('{{ url_for("delete_password") }}', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ id: id }) // Отправляем ID записи в БД
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Перезагрузка списка гарантирует, что таблица актуальна
+                            loadPasswords();
+                            showNotification('Пароль удален.', 'error');
+                        } else {
+                            response.json().then(err => {
+                                showNotification(`Ошибка: ${err.error || 'Неизвестная ошибка сервера.'}`, 'error');
+                            }).catch(() => {
+                                showNotification('Ошибка при удалении пароля.', 'error');
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        showNotification('Ошибка сети при удалении.', 'error');
+                    });
+                }
+            }
+
+
+            // --- 5. Обработчик формы генерации ---
+            generateForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const form = event.target;
+                const lengthValue = parseInt(form.length.value);
+
+                if (lengthValue < 4 || lengthValue > 128 || isNaN(lengthValue)) {
+                    showNotification('Длина пароля должна быть от 4 до 128 символов.', 'error');
+                    return;
+                }
+
+                const data = {
+                    length: lengthValue,
+                    site: form.site.value,
+                    login: form.login.value,
+                    lowercase: form.lowercase.checked,
+                    uppercase: form.uppercase.checked,
+                    numbers: form.numbers.checked,
+                    symbols: form.symbols.checked
+                };
+
+                if (!data.lowercase && !data.uppercase && !data.numbers && !data.symbols) {
+                    showNotification('Выберите хотя бы один тип символов!', 'error');
+                    return;
+                }
+
+                fetch('{{ url_for("generate") }}', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.error || "Неизвестная ошибка") });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (result.password) {
+                        document.getElementById('password-output').querySelector('p').textContent = "Сгенерирован и сохранен:";
+                        generatedPassword.textContent = result.password;
+
+                        showNotification('Новый пароль сгенерирован и сохранен!', 'success');
+
+                        loadPasswords();
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка генерации:', error);
+                    generatedPassword.textContent = `Ошибка: ${error.message}`;
+                    showNotification(`Ошибка генерации: ${error.message}`, 'error');
+                });
+            });
+
+            // Инициализация при загрузке страницы
+            loadPasswords();
+        });
+    </script>
+</body>
+</html>
